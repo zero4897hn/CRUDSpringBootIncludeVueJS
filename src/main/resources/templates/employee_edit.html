@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" type="text/css" th:href="@{/vendors/bootstrap/css/bootstrap.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/vendors/fontawesome/css/all.css}">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<div class="container" id="app">
+		<div class="row">
+			<div class="col-12">
+				<h3 class="text-center">Edit an employee.</h3>
+			</div>
+		</div>
+		<div class="row justify-content-center">
+			<div class="col-6">
+				<form>
+					<input type="hidden">
+					<div class="form-group">
+						<label for="txtFirstName">First name:</label>
+						<input type="text" class="form-control" id="txtFirstName" placeholder="First Name"
+							v-model="employee.firstName">
+					</div>
+					<div class="form-group">
+						<label for="txtLastName">Last name:</label>
+						<input type="text" class="form-control" id="txtLastName" placeholder="Last Name"
+							v-model="employee.lastName">
+					</div>
+					<div class="form-group">
+						<label for="txtEmail">Email:</label>
+						<input type="email" class="form-control" id="txtEmail" placeholder="Email" v-model="employee.email">
+					</div>
+					<button class="btn btn-primary" v-on:click="editEmployee($event, employee)">Edit an employee</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" th:src="@{/vendors/bootstrap/js/bootstrap.js}"></script>
+	<script type="text/javascript" th:src="@{/vendors/fontawesome/js/all.js}"></script>
+	<script type="text/javascript" th:src="@{/vendors/vue/vue.js}"></script>
+	<script type="text/javascript" th:src="@{/vendors/axios/axios.js}"></script>
+	<script type="text/javascript" th:src="@{/vendors/vue-router/vue-router.js}"></script>
+	<script type="text/javascript" th:inline="javascript">
+		var employeeId = /*[[${employee.id}]]*/ 0;
+		console.log(employeeId);
+		var app = new Vue({
+			el: '#app',
+			data: {
+				employee: null
+			},
+			mounted() {
+				axios.get('/api/employee/find/' + employeeId).then(response => {
+					this.employee = response.data;
+				})
+			},
+			methods: {
+				editEmployee(event, employee) {
+					event.preventDefault();
+					axios.put('/api/employee/update', employee).then(response => {
+						window.location.href = '/';
+					}).catch(e => {
+						console.log(e);
+					})
+				}
+			}
+		});
+	</script>
+</body>
+
+</html>
